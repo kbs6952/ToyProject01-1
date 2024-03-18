@@ -11,6 +11,9 @@ public class SpawnManger : MonoBehaviour
     public int enemyCount = 0;
     public int waveNumber = 1;
 
+    public float limitWidth = 5;
+    public float limitHeight = 11;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -35,7 +38,17 @@ public class SpawnManger : MonoBehaviour
     {
         for (int i = 0; i < spawnNumber; i++)
         {
-            GameObject enemyObj = Instantiate(enemy, enemySpawnPosition.position, Quaternion.identity);
+            GameObject enemyObj = Instantiate(enemy, RandomSpawnPoistion(), Quaternion.identity);
         }  
+    }
+
+    private Vector3 RandomSpawnPoistion()
+    {
+        float randomX = UnityEngine.Random.Range(-limitWidth, limitWidth);
+        float randomZ = UnityEngine.Random.Range(-limitHeight, limitHeight);
+        
+        Vector3 randomPos = new Vector3(randomX, 0, randomZ);
+
+        return randomPos;
     }
 }

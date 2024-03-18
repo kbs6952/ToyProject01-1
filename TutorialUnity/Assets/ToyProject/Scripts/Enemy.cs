@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class Enemy : MonoBehaviour
 {
     // 플레이어의 방향( 정중앙 )
@@ -53,5 +55,4 @@ public class Enemy : MonoBehaviour
 
         }
     }
-
 }
