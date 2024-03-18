@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Simple_01/Sample/Sample01.unity
+- path: Assets/Malbers Animations/Simple_01/Sample/Sample01.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

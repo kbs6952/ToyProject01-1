@@ -14,6 +14,8 @@ public class Enemy : MonoBehaviour
 
     private Vector3 targetDirection;
 
+    [SerializeField] private float pushPower;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -29,4 +31,27 @@ public class Enemy : MonoBehaviour
         targetDirection = (centerPoint.transform.position - transform.position).normalized;
         rigidbody.AddForce(targetDirection * enemyMoveSpeed);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DestoryZone"))
+        {
+            Destroy(other.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            Debug.Log("적과 충돌하였음!");
+            // 적과 충돌했을 때 적이 밖으로 더 잘 날라가게 해주는 기능을 추가해본다.
+
+            Vector3 powerVector = (transform.position - collision.transform.position).normalized;    // 충돌(플레이어)가 Enemy 방향을 구한다 ( normalized를 통해 힘의 크기를 뺀 방향만 구할 수 있다.)
+            Rigidbody enemyRigidbody = collision.gameObject.GetComponent<Rigidbody>();               // Enemy가 갖고 있는 Rigidbody를 참조해서 Enemy의 물리 효과를 구현할 수 있다.
+            enemyRigidbody.AddForce(powerVector * pushPower, ForceMode.Impulse);                     // EnemyRigidbody. AddForce 함수를 이용해서 Enemy가 충돌할 때 더 크게 날라가도록 변경하였다.
+
+        }
+    }
+
 }
