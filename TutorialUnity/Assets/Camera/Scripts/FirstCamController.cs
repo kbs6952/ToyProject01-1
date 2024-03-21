@@ -13,8 +13,9 @@ public class FirstCamController : MonoBehaviour
     private Vector2 mouseInput;
 
     [SerializeField] private bool inverseLook; // true이면 마우스 상하 반전, false이면 정상
-
-
+    // 1인칭 카메라를 플레이어의 자식으로 귀속시키지 않고 플레이어를 따라오게하기 위해
+    // 카메라를 변수로 가져온다.
+    [SerializeField] private Camera firstCam;    // 1인칭 카메라 게임오브젝트를 사용하기 위한 변수
     // Start is called before the first frame update
     void Start()
     {
@@ -29,7 +30,7 @@ public class FirstCamController : MonoBehaviour
         float inverseValue = inverseLook ? -1 : 1;   // inverseValue - inverseLook Bool값에 따라 마우스 회전을 변경할 수 있게 된다.
 
         float rotationX = Input.GetAxisRaw("Mouse X");
-        float rotationY = Input.GetAxisRaw("Mouse Y");
+        float rotationY = Input.GetAxisRaw("Mouse Y") * inverseValue;
 
         mouseInput = new Vector2(rotationX, rotationY) * mouseSensitvity;
 
@@ -46,5 +47,15 @@ public class FirstCamController : MonoBehaviour
         viewPort.rotation = Quaternion.Euler(verticalRot,
             viewPort.rotation.eulerAngles.y,
             viewPort.rotation.eulerAngles.z);
+
+
+    }
+
+    private void LateUpdate()             // playerController의 Update문에서 플레이어의 이동이 적용. firstCamController 카메라의 회전이 적용
+    {
+        firstCam.transform.position = viewPort.position;  // 1인칭 카메라의 회전과 이동 역할을 하는 viewport의 position과 위치를 맞춰준다.
+        firstCam.transform.rotation = viewPort.rotation;  
+
+        // 선형 보간법으로 회전을 부드럽게 적용해보기
     }
 }
