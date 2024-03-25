@@ -9,6 +9,9 @@ namespace CameraSetting
     [RequireComponent(typeof(CharacterController))]
     public class PlayerController : MonoBehaviour
     {
+        [Header("플레이어 매니저 스크립트")]
+        [HideInInspector] public PlayerAnimationManager animationManager;
+
         [Header("플레이어 입력 제어 변수")]
         [SerializeField] private float moveSpeed;       // 플레이어의 기본 속도
         [SerializeField] private float runSpeed;        // 플레이어가 달릴 때의 속도
@@ -31,6 +34,7 @@ namespace CameraSetting
         private float activeMoveSpeed;                  // 실제로 플레이어가 이동할 속력을 저장할 변수
         private Vector3 movement;                       // 플레이어가 움직이는 방향과 거리가 포함된 최종 Vector 값
 
+        [Header("애니메이터")]
         private Animator playerAnimator;                // 3D 캐릭터의 애니메이션을 실행시켜주기 위한 애니메이터
 
         // Start is called before the first frame update
@@ -53,17 +57,23 @@ namespace CameraSetting
             float moveAmount = Mathf.Clamp01(Mathf.Abs(horizontal) + Mathf.Abs(vertical)); // 키보드로 상하좌우 키 한개만 입력을 하면 0보다 큰 값을 moveAmount에 저장한다.
                                                                                            // 현재 위치 + 속도 * 가속도 = 이동 거리
                                                                                            // 이동거리만큼 (매 프레임마다 움직입니다 * Time.deltaTime)=> 프레임수와 상관없이 같은 시간에 같은 거리를 움직입니다.
+
             // 3. 플레이어 캐릭터 이동할 방향을 지정할 변수 선언
-
-            //Vector3 firstMovement = transform.forward * moveDir.z + transform.right * moveDir.x;
-
-            Vector3 moveDirection = thirdCam.camLookRotation * moveInput; // 플레이어가 이동할 방향을 저장하는 변수 moveDirection.  
+            // 플레이어가 이동할 방향을 저장하는 변수 moveDirection.  
+            Vector3 moveDirection = thirdCam.transform.forward * moveInput.z + thirdCam.transform.right * moveInput.x;
+            moveDirection.y = 0;    
 
             // 4. 플레이어의 이동 속도를 다르게 해주는 코드 (달리기 기능) - 
             if (Input.GetKey(KeyCode.LeftShift))  // Key Down : 누를 때 한번, Key : Key버튼을 떼기 전까지 계속        
+            {
                 activeMoveSpeed = runSpeed;
-            else 
+                playerAnimator.SetBool("IsRun", true);
+            }
+            else
+            {
                 activeMoveSpeed = moveSpeed;
+                playerAnimator.SetBool("IsRun", false);
+            }
 
             
             // 5. 점프를 하기 위한 계산식 - 
@@ -86,6 +96,7 @@ namespace CameraSetting
             // 점프키를 입력하여 점프 구현
             if (Input.GetButtonDown("Jump") && isGrounded)
             {
+                playerAnimator.CrossFade("Jump", 0.2f);               // 두 번째 매개변수 : 현재 State에서 실행하고 싶은 애니메이션을 자동으로 Blend해주는 시간
                 movement.y = jumpForce;
             }
 
@@ -95,16 +106,17 @@ namespace CameraSetting
             if (moveAmount > 0) // moveDir 0일 때 moveMent가 0이 된다.
             {
                targetRotation = Quaternion.LookRotation(moveDirection);
-               playerAnimator.SetBool("IsRun", true);
             }
 
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, smoothRotation * Time.deltaTime);
-            cCon.Move(movement * Time.deltaTime); 
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, smoothRotation);
+            cCon.Move(movement * Time.deltaTime);
+            playerAnimator.SetFloat("moveAmount", moveAmount, 0.2f, Time.deltaTime);           // dampTime : 1번째 변수(이전 값), 2번째 변수(변화 시키고 싶은 값)  
         }
 
         private void GroundCheck() // 플레이어가 땅인지 아닌지 판별하는 함수
         {
             isGrounded = Physics.CheckSphere(transform.TransformPoint(groundCheckPoint), groundCheckRadius, groundLayer); // 레이어가 ground인 groundCheckRadius이고 위치 시작점이 checkPoint인 물리 충돌이 발생하면 True, false
+            playerAnimator.SetBool("IsGround", isGrounded);
         }
 
         private void OnDrawGizmos() // 눈에 안보이는 땅체크 함수를 가시화 하기 위해 선언
