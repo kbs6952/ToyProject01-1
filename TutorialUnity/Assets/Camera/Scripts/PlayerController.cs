@@ -30,10 +30,14 @@ namespace CameraSetting
 
         private float activeMoveSpeed;                  // 실제로 플레이어가 이동할 속력을 저장할 변수
         private Vector3 movement;                       // 플레이어가 움직이는 방향과 거리가 포함된 최종 Vector 값
+
+        private Animator playerAnimator;                // 3D 캐릭터의 애니메이션을 실행시켜주기 위한 애니메이터
+
         // Start is called before the first frame update
         void Start()
         {
             cCon = GetComponent<CharacterController>();
+            playerAnimator = GetComponentInChildren<Animator>();
         }
 
         // Update is called once per frame 컴퓨터가 좋을 수록 frame이 많이 생성되고 Update도 많이 호출 됩니다.
@@ -91,6 +95,7 @@ namespace CameraSetting
             if (moveAmount > 0) // moveDir 0일 때 moveMent가 0이 된다.
             {
                targetRotation = Quaternion.LookRotation(moveDirection);
+               playerAnimator.SetBool("IsRun", true);
             }
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, smoothRotation * Time.deltaTime);
