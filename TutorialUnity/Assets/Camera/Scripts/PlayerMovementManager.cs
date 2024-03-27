@@ -55,7 +55,8 @@ namespace CameraSetting
         void Update()
         {
             HandleMovement();
-            HandleActionInput();
+            HandleComboAttack();
+            HandleActionInput();            
         }
 
         private void GroundCheck() // 플레이어가 땅인지 아닌지 판별하는 함수
@@ -78,6 +79,10 @@ namespace CameraSetting
 
             float horizontal = Input.GetAxis("Horizontal");
             float vertical = Input.GetAxis("Vertical");
+
+
+            //playerAnimator.SetFloat("Horizontal", horizontal, 0.2f, Time.deltaTime);
+            //playerAnimator.SetFloat("Vertical", horizontal, 0.2f, Time.deltaTime);
 
             // 2. 키보드 Input과 입력 값을 확인하기 위한 변수 선언
             Vector3 moveInput = new Vector3(horizontal, 0, vertical).normalized;           // 키보드 입력값을 저장하는 백터 
@@ -152,6 +157,19 @@ namespace CameraSetting
         private void HandleAttackAction()
         {
             player.playerAnimationManager.PlayerTargetActionAnimation("ATK0", true);
+            player.canCombo = true;                                                    // canCombo True일 대만 콤보 어택을 할 수 있게 제어 변수 선언
+        }
+
+        private void HandleComboAttack()
+        {
+            if (!player.canCombo) return; // 예외 사항 처리
+
+            // 콤보 어택을 사용할 입력 키 설정
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                player.animator.SetTrigger("doAttack");
+            }
         }
     }
 
