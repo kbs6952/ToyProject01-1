@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class TitleUIManager : MonoBehaviour
 {
+
+    public void GameStart()
+    {
+        LoadingUI.LoadScene("CameraSettingScene");
+    }
+
     
     public void GameQuit()
     {
