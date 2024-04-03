@@ -49,6 +49,7 @@ namespace CameraSetting
         {
             cCon = GetComponent<CharacterController>();
             playerAnimator = GetComponentInChildren<Animator>();
+            cCon.enabled = true;
         }
 
         // Update is called once per frame 컴퓨터가 좋을 수록 frame이 많이 생성되고 Update도 많이 호출 됩니다.
