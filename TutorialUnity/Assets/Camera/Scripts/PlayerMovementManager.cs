@@ -140,6 +140,7 @@ namespace CameraSetting
             if (moveAmount > 0) // moveDir 0일 때 moveMent가 0이 된다.
             {
                 targetRotation = Quaternion.LookRotation(moveDirection);
+                player.playerAudioManager.PlayFootStep();
             }
 
             transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, smoothRotation);
