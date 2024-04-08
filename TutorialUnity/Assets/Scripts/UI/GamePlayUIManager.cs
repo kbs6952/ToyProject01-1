@@ -22,6 +22,10 @@ public class GamePlayUIManager : MonoBehaviour
         }
     }
 
+    public void CloseUIMenu()
+    {
+        
+    }
     private void CallSettingUI(bool isOpen)
     {
         UIGameObject.SetActive(isOpen);

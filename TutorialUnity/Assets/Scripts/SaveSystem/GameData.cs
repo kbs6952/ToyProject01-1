@@ -14,4 +14,6 @@ public class GameData
     public float timeValue;  // 플레이 타임을 저장하는 변수
 
     public string playerName; // 플레이어의 이름을 저장하는 변수
+
+    public SeriAbleDictionary<string, float> volumeSettings;    // 볼륨 설정은 Dictionary로 저장
 }
